@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Josie Coralie Thumno — Audit & Contrôle de Gestion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════
+   DESIGN SYSTEM — Finance × Apple editorial
+   3 couleurs : #ffffff · #1c2b3a · #8b6f47
+══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --white:   #ffffff;
+  --navy:    #1c2b3a;   /* finance deep blue-grey */
+  --bronze:  #8b6f47;   /* warm accent */
+
+  --navy-90: rgba(28,43,58,0.9);
+  --navy-12: rgba(28,43,58,0.12);
+  --navy-06: rgba(28,43,58,0.06);
+  --navy-04: rgba(28,43,58,0.04);
+  --bronze-15: rgba(139,111,71,0.15);
+  --bronze-30: rgba(139,111,71,0.30);
+
+  --surface:  #fafaf9;
+  --surface2: #f4f3f0;
+  --text:     #1c2b3a;
+  --muted:    #7a8a96;
+  --hairline: rgba(28,43,58,0.10);
+
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans:  'Instrument Sans', system-ui, sans-serif;
+
+  --max: 1400px;
+  --gutter: clamp(20px, 5.5vw, 88px);
+  --r:  12px;
+  --rl: 18px;
+  --rx: 24px;
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 2px; }
+::-webkit-scrollbar-thumb { background: var(--navy-12); border-radius: 2px; }
+
+/* ── UTILITIES ── */
+.serif { font-family: var(--serif); }
+.label {
+  font-family: var(--sans); font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted);
+}
+.label-bronze { color: var(--bronze); }
+
+/* ══════════════════════════════════════════
+   NAV
+══════════════════════════════════════════ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: 62px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--gutter);
+  background: rgba(250, 250, 249, 0.88);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border-bottom: 0.5px solid var(--hairline);
+  transition: background 0.3s;
+}
+.nav-logo {
+  font-family: var(--serif); font-size: 17px; font-weight: 500;
+  color: var(--navy); text-decoration: none; letter-spacing: -0.01em;
+}
+.nav-logo span { font-style: italic; color: var(--bronze); }
+.nav-links { display: flex; list-style: none; }
+.nav-links a {
+  font-size: 11.5px; font-weight: 500; letter-spacing: 0.04em;
+  padding: 0 16px; line-height: 62px;
+  color: var(--muted); text-decoration: none;
+  border-bottom: 1.5px solid transparent;
+  transition: color 0.18s, border-color 0.18s;
+}
+.nav-links a:hover { color: var(--navy); }
+.nav-links a.active { color: var(--navy); border-bottom-color: var(--bronze); }
+.nav-cta {
+  font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em;
+  padding: 8px 22px; border-radius: 100px;
+  background: var(--navy); color: var(--white);
+  text-decoration: none; border: 1.5px solid var(--navy);
+  transition: all 0.2s var(--ease);
+}
+.nav-cta:hover { background: transparent; color: var(--navy); }
+.nav-ham { display: none; flex-direction: column; gap: 4.5px; cursor: pointer; border: none; background: none; padding: 8px; }
+.nav-ham span { display: block; width: 20px; height: 1.5px; background: var(--navy); border-radius: 2px; transition: all 0.28s; }
+.nav-ham.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.nav-ham.open span:nth-child(2) { opacity: 0; }
+.nav-ham.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+.mob-menu {
+  display: none; position: fixed; inset: 62px 0 0; z-index: 199;
+  background: var(--surface); padding: 28px var(--gutter) 40px;
+  flex-direction: column; gap: 0;
+  opacity: 0; transform: translateY(-6px);
+  transition: opacity 0.22s, transform 0.22s;
+}
+.mob-menu.open { display: flex; opacity: 1; transform: none; }
+.mob-menu a {
+  font-family: var(--serif); font-size: 26px; font-weight: 400;
+  color: var(--navy); text-decoration: none;
+  padding: 16px 0; border-bottom: 0.5px solid var(--hairline);
+  transition: opacity 0.15s;
+}
+.mob-menu a:hover { opacity: 0.5; }
+
+/* ══════════════════════════════════════════
+   HERO — pleine largeur, layout magazine
+══════════════════════════════════════════ */
+.hero {
+  min-height: 100vh; padding-top: 62px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  max-width: 100%;
+}
+.hero-left {
+  background: var(--navy);
+  padding: clamp(60px,8vw,120px) var(--gutter) clamp(60px,8vw,100px) var(--gutter);
+  display: flex; flex-direction: column; justify-content: space-between;
+  position: relative; overflow: hidden;
+}
+/* subtle geometric watermark */
+.hero-left::before {
+  content: '';
+  position: absolute; bottom: -80px; left: -80px;
+  width: 400px; height: 400px; border-radius: 50%;
+  border: 1px solid rgba(139,111,71,0.15);
+  pointer-events: none;
+}
+.hero-left::after {
+  content: '';
+  position: absolute; bottom: -20px; left: -20px;
+  width: 280px; height: 280px; border-radius: 50%;
+  border: 1px solid rgba(139,111,71,0.10);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--bronze);
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: clamp(32px,5vw,56px);
+  opacity: 0; animation: fadeUp 0.6s var(--ease) 0.1s forwards;
+}
+.hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--bronze); }
+
+.hero-name {
+  font-family: var(--serif);
+  font-size: clamp(52px, 7vw, 100px);
+  font-weight: 300; line-height: 0.95;
+  letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: clamp(24px,4vw,40px);
+  opacity: 0; animation: fadeUp 0.8s var(--ease) 0.2s forwards;
+}
+.hero-name em { font-style: italic; color: var(--bronze); display: block; }
+
+.hero-pitch {
+  font-size: clamp(14px,1.4vw,16px); font-weight: 400;
+  color: rgba(255,255,255,0.6); line-height: 1.75;
+  max-width: 440px; margin-bottom: clamp(36px,5vw,56px);
+  opacity: 0; animation: fadeUp 0.7s var(--ease) 0.35s forwards;
+}
+
+.hero-btns {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  opacity: 0; animation: fadeUp 0.6s var(--ease) 0.45s forwards;
+}
+.btn-hero-p {
+  font-size: 11.5px; font-weight: 600; letter-spacing: 0.08em;
+  padding: 12px 28px; border-radius: 100px;
+  background: var(--bronze); color: var(--white);
+  text-decoration: none; border: 1.5px solid var(--bronze);
+  transition: all 0.2s var(--ease);
+}
+.btn-hero-p:hover { background: transparent; color: var(--bronze); }
+.btn-hero-s {
+  font-size: 11.5px; font-weight: 500; letter-spacing: 0.06em;
+  padding: 12px 0; color: rgba(255,255,255,0.5);
+  text-decoration: none; border-bottom: 1px solid transparent;
+  transition: all 0.2s;
+}
+.btn-hero-s:hover { color: var(--white); border-bottom-color: rgba(255,255,255,0.4); }
+
+.hero-bottom-labels {
+  display: flex; gap: 32px; flex-wrap: wrap;
+  opacity: 0; animation: fadeUp 0.6s var(--ease) 0.55s forwards;
+}
+.hero-bottom-label { display: flex; flex-direction: column; gap: 4px; }
+.hero-bottom-val {
+  font-family: var(--serif); font-size: 28px; font-weight: 400;
+  color: var(--white); line-height: 1;
+}
+.hero-bottom-key {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.14em;
+  text-transform: uppercase; color: rgba(255,255,255,0.38);
+}
+
+/* HERO RIGHT */
+.hero-right {
+  background: var(--surface2);
+  display: flex; flex-direction: column;
+  position: relative; overflow: hidden;
+}
+.hero-photo-area {
+  flex: 1; position: relative;
+  overflow: hidden;
+}
+.hero-photo-area img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center 10%;
+  display: block;
+  opacity: 0; animation: fadeIn 1.2s var(--ease) 0.4s forwards;
+}
+
+/* ring overlay centred on photo */
+.hero-ring-wrap {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(70%, 300px); aspect-ratio: 1;
+  pointer-events: none;
+}
+.hero-ring-wrap svg { width: 100%; height: 100%; }
+.hr-track { fill: none; stroke: rgba(139,111,71,0.18); stroke-width: 1; }
+.hr-fill {
+  fill: none; stroke: var(--bronze); stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-dasharray: 942; stroke-dashoffset: 942;
+  transition: stroke-dashoffset 2.4s var(--ease) 0.8s;
+}
+
+.hero-contact-strip {
+  border-top: 0.5px solid var(--hairline);
+  padding: 24px var(--gutter);
+  display: grid; grid-template-columns: repeat(2,1fr); gap: 16px;
+}
+.hcs-item { display: flex; flex-direction: column; gap: 4px; }
+.hcs-label { font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.hcs-val { font-size: 13px; font-weight: 500; color: var(--navy); }
+.hcs-val a { color: var(--navy); text-decoration: none; border-bottom: 0.5px solid var(--hairline); transition: border-color 0.2s; }
+.hcs-val a:hover { border-color: var(--bronze); }
+
+/* ══════════════════════════════════════════
+   CHIPS ROW — sous le hero, pleine largeur
+══════════════════════════════════════════ */
+.chips-row {
+  border-bottom: 0.5px solid var(--hairline);
+  overflow-x: auto; scrollbar-width: none;
+  background: var(--white);
+}
+.chips-row::-webkit-scrollbar { display: none; }
+.chips-inner {
+  max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter);
+  display: flex; align-items: center; gap: 0;
+  white-space: nowrap;
+}
+.chip-item {
+  font-size: 11px; font-weight: 500; letter-spacing: 0.04em;
+  color: var(--muted); padding: 14px 20px;
+  border-right: 0.5px solid var(--hairline);
+  transition: color 0.15s, background 0.15s;
+  cursor: default;
+}
+.chip-item:first-child { border-left: 0.5px solid var(--hairline); }
+.chip-item:hover { color: var(--navy); background: var(--navy-04); }
+.chip-item.accent { color: var(--bronze); font-weight: 600; }
+
+/* ══════════════════════════════════════════
+   SECTION WRAPPER
+══════════════════════════════════════════ */
+.wrap {
+  max-width: var(--max); margin: 0 auto;
+  padding: clamp(64px,9vw,128px) var(--gutter);
+}
+.wrap-sm { padding-top: clamp(40px,5vw,72px); padding-bottom: clamp(40px,5vw,72px); }
+
+/* section header */
+.sh {
+  display: grid; grid-template-columns: 1fr auto;
+  align-items: end; gap: 20px;
+  padding-bottom: 24px;
+  border-bottom: 0.5px solid var(--hairline);
+  margin-bottom: clamp(40px,5vw,64px);
+}
+.sh-left .sh-num {
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--bronze);
+  margin-bottom: 10px; display: flex; align-items: center; gap: 10px;
+}
+.sh-left .sh-num::before { content: ''; width: 20px; height: 1px; background: var(--bronze); }
+.sh-h {
+  font-family: var(--serif);
+  font-size: clamp(28px, 3.8vw, 52px);
+  font-weight: 400; line-height: 1.05;
+  letter-spacing: -0.025em; color: var(--navy);
+}
+.sh-right { font-size: 13px; color: var(--muted); text-align: right; max-width: 280px; line-height: 1.6; }
+
+/* ══════════════════════════════════════════
+   MAIN COLUMN LAYOUT — 2 col sticky
+   (sidebar gauche + contenu droit)
+══════════════════════════════════════════ */
+.two-col {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 0 clamp(40px,5vw,80px);
+  align-items: start;
+}
+.sidebar {
+  position: sticky; top: 82px;
+  display: flex; flex-direction: column; gap: 40px;
+}
+.sdb-block {}
+.sdb-title {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--bronze);
+  margin-bottom: 16px; padding-bottom: 10px;
+  border-bottom: 0.5px solid var(--bronze-15);
+}
+.sdb-nav { list-style: none; display: flex; flex-direction: column; gap: 0; }
+.sdb-nav li a {
+  display: block; font-size: 13px; font-weight: 500; color: var(--muted);
+  text-decoration: none; padding: 9px 0;
+  border-bottom: 0.5px solid var(--hairline);
+  transition: color 0.15s, padding-left 0.2s var(--ease);
+}
+.sdb-nav li a:hover { color: var(--navy); padding-left: 6px; }
+.sdb-nav li a.active { color: var(--bronze); padding-left: 4px; }
+
+.sdb-contact-item {
+  display: flex; flex-direction: column; gap: 3px;
+  padding: 10px 0; border-bottom: 0.5px solid var(--hairline);
+}
+.sdb-contact-item:last-child { border-bottom: none; }
+.sdb-contact-key { font-size: 10px; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); }
+.sdb-contact-val { font-size: 12.5px; color: var(--navy); }
+.sdb-contact-val a { color: var(--bronze); text-decoration: none; }
+.sdb-contact-val a:hover { text-decoration: underline; }
+
+/* ══════════════════════════════════════════
+   EXPÉRIENCE / FORMATION / COMPÉTENCE CARDS
+   — un seul flux vertical côté droit
+══════════════════════════════════════════ */
+.content-feed { display: flex; flex-direction: column; gap: 12px; }
+
+/* groupe de section dans le feed */
+.feed-section-label {
+  display: flex; align-items: center; gap: 14px;
+  padding: 20px 0 4px;
+  margin-top: 16px;
+}
+.feed-section-label:first-child { margin-top: 0; }
+.fsl-text {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--navy);
+  white-space: nowrap;
+}
+.fsl-line { flex: 1; height: 0.5px; background: var(--hairline); }
+
+/* ── CARD ── */
+.card {
+  background: var(--white);
+  border-radius: var(--rx);
+  border: 0.5px solid var(--hairline);
+  overflow: hidden;
+  transition: box-shadow 0.3s var(--ease), border-color 0.25s;
+}
+.card:hover { box-shadow: 0 4px 28px rgba(28,43,58,0.07); border-color: var(--navy-12); }
+
+/* card header — always visible */
+.card-hd {
+  padding: 24px 28px 22px;
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 16px; align-items: start;
+  cursor: pointer; user-select: none;
+}
+.ch-period {
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--bronze); margin-bottom: 7px;
+}
+.ch-title {
+  font-family: var(--serif);
+  font-size: clamp(17px,2vw,22px);
+  font-weight: 400; color: var(--navy);
+  line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 4px;
+}
+.ch-sub { font-size: 12.5px; color: var(--muted); }
+.ch-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+.ch-badge {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 5px 13px; border-radius: 100px;
+  background: var(--navy-06); border: 0.5px solid var(--navy-12);
+  color: var(--muted); white-space: nowrap;
+}
+.ch-badge.edu { background: var(--bronze-15); border-color: var(--bronze-30); color: var(--bronze); }
+.plus {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 0.5px solid var(--navy-12); background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--navy); font-size: 16px; font-weight: 300;
+  transition: all 0.25s var(--spring); flex-shrink: 0; line-height: 1;
+}
+.plus.open { background: var(--navy); color: var(--white); border-color: var(--navy); transform: rotate(45deg); }
+
+/* card body — collapsible */
+.card-bd {
+  overflow: hidden; max-height: 0; opacity: 0;
+  transition: max-height 0.55s var(--ease), opacity 0.4s;
+}
+.card-bd.open { max-height: 2000px; opacity: 1; }
+.card-bd-inner { padding: 0 28px 28px; border-top: 0.5px solid var(--hairline); padding-top: 24px; }
+
+/* ── BODY COMPONENTS ── */
+.context {
+  font-size: 13.5px; color: var(--muted); line-height: 1.75;
+  margin-bottom: 20px; padding-left: 14px;
+  border-left: 2px solid var(--bronze-15);
+}
+
+/* missions */
+.missions { display: flex; flex-direction: column; gap: 5px; margin-bottom: 22px; }
+.m {
+  font-size: 13px; color: #3a4a57; line-height: 1.6;
+  padding: 10px 14px 10px 32px;
+  background: var(--surface); border-radius: 8px;
+  border: 0.5px solid var(--hairline); position: relative;
+}
+.m::before {
+  content: ''; position: absolute; left: 13px; top: 17px;
+  width: 4px; height: 4px; border-radius: 50%; background: var(--navy-12);
+}
+.m.key {
+  background: var(--white); border: 0.5px solid var(--navy-12);
+  border-left: 2px solid var(--navy); border-radius: 0 8px 8px 0;
+}
+.m.key::before { background: var(--navy); }
+.m strong { font-weight: 600; color: var(--navy); }
+
+/* cours / compétences liste */
+.detail-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 22px; }
+.dl {
+  font-size: 13px; color: #3a4a57; line-height: 1.55;
+  padding: 9px 14px 9px 30px;
+  background: var(--surface); border-radius: 8px;
+  border: 0.5px solid var(--hairline); position: relative;
+}
+.dl::before {
+  content: ''; position: absolute; left: 12px; top: 16px;
+  width: 4px; height: 4px; border-radius: 50%; background: var(--bronze-30);
+}
+.dl strong { font-weight: 600; color: var(--navy); }
+
+/* KPI row */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px,1fr)); gap: 8px; }
+.kpi {
+  background: var(--surface); border-radius: 10px;
+  border: 0.5px solid var(--hairline);
+  padding: 14px 12px; text-align: center;
+}
+.kpi-v {
+  font-family: var(--serif); font-size: 24px; font-weight: 400;
+  color: var(--navy); line-height: 1; margin-bottom: 7px;
+}
+.kpi-l { font-size: 10.5px; color: var(--muted); line-height: 1.4; }
+
+/* skill rows inside card */
+.skill-rows { display: flex; flex-direction: column; gap: 0; margin-bottom: 22px; }
+.skill-r {
+  display: flex; align-items: center; gap: 14px;
+  padding: 10px 8px; margin: 0 -8px;
+  border-radius: 8px; cursor: pointer;
+  transition: background 0.14s;
+  border-bottom: 0.5px solid var(--hairline);
+}
+.skill-r:last-child { border-bottom: none; }
+.skill-r:hover { background: var(--navy-04); }
+.sk-info { flex: 1; min-width: 0; }
+.sk-name { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 2px; }
+.sk-lvl { font-size: 11px; color: var(--muted); }
+/* ring */
+.sk-ring { position: relative; width: 42px; height: 42px; flex-shrink: 0; }
+.sk-ring svg { width: 42px; height: 42px; }
+.sr-track { fill: none; stroke: var(--hairline); stroke-width: 3; }
+.sr-fill {
+  fill: none; stroke: var(--navy); stroke-width: 3; stroke-linecap: round;
+  transition: stroke-dashoffset 1.2s var(--ease);
+}
+.sr-fill.bronze { stroke: var(--bronze); }
+.sk-ring-pct {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 9.5px; font-weight: 600; color: var(--navy);
+}
+/* skill detail */
+.sk-plus { width: 26px; height: 26px; border-radius: 50%; border: 0.5px solid var(--navy-12); background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 300; color: var(--navy); cursor: pointer; transition: all 0.22s var(--spring); flex-shrink: 0; line-height: 1; }
+.sk-plus.open { background: var(--bronze); color: var(--white); border-color: var(--bronze); transform: rotate(45deg); }
+.sk-detail {
+  display: none; margin: 4px 0 8px 56px;
+  background: var(--surface); border-radius: 8px;
+  padding: 12px 14px; border: 0.5px solid var(--hairline);
+  font-size: 12.5px; color: var(--muted); line-height: 1.65;
+}
+.sk-detail.open { display: block; }
+.sk-detail ul { padding-left: 14px; margin-top: 8px; }
+.sk-detail li { margin-bottom: 3px; }
+
+/* bridge */
+.bridge {
+  margin-top: 20px; padding: 18px 18px;
+  background: var(--surface); border-radius: 10px;
+  border: 0.5px solid var(--hairline);
+  border-left: 2px solid var(--bronze);
+}
+.bridge-title { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--bronze); margin-bottom: 8px; }
+.bridge-text { font-size: 12.5px; color: var(--muted); line-height: 1.7; }
+.bridge-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.btag { font-size: 11.5px; padding: 4px 11px; border-radius: 100px; border: 0.5px solid var(--navy-12); color: #4a5a66; background: var(--white); }
+
+/* deliverables */
+.delivs { display: grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap: 8px; margin-top: 20px; }
+.deliv { background: var(--surface); border-radius: 10px; border: 0.5px solid var(--hairline); padding: 14px; }
+.deliv-name { font-size: 12.5px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+.deliv-desc { font-size: 11.5px; color: var(--muted); line-height: 1.4; }
+
+/* timeline (projets) */
+.tl { display: flex; flex-direction: column; }
+.tlp { display: grid; grid-template-columns: 40px 1fr; gap: 0 16px; position: relative; }
+.tlp:not(:last-child) .tlp-line { position: absolute; left: 19px; top: 38px; bottom: -8px; width: 0.5px; background: var(--hairline); }
+.tlp-num-col { display: flex; justify-content: center; padding-top: 2px; }
+.tlp-num {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 0.5px solid var(--navy-12);
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600; color: var(--navy);
+  position: relative; z-index: 1;
+}
+.tlp-num.done { background: var(--navy); color: var(--white); border-color: var(--navy); }
+.tlp-content { padding-bottom: 28px; }
+.tlp-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 6px; }
+.tlp-name { font-size: 13.5px; font-weight: 600; color: var(--navy); }
+.tlp-dur { font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; padding: 3px 10px; border-radius: 100px; border: 0.5px solid var(--hairline); color: var(--muted); }
+.tlp-desc { font-size: 13px; color: var(--muted); margin-bottom: 10px; line-height: 1.6; }
+.tlp-tasks { display: flex; flex-direction: column; gap: 4px; }
+.tlp-task { font-size: 12.5px; padding: 8px 12px; background: var(--surface); border-radius: 7px; border-left: 2px solid var(--hairline); color: #3a4a57; line-height: 1.5; }
+.tlp-task.k { border-left-color: var(--navy); background: var(--white); border: 0.5px solid var(--navy-12); border-left-width: 2px; }
+
+/* ══════════════════════════════════════════
+   PROJETS — layout légèrement différent
+══════════════════════════════════════════ */
+.proj-tabs { display: flex; gap: 0; margin-bottom: 36px; border-bottom: 0.5px solid var(--hairline); }
+.proj-tab {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.06em;
+  padding: 13px 22px; cursor: pointer; color: var(--muted);
+  border: none; background: none;
+  border-bottom: 2px solid transparent; margin-bottom: -0.5px;
+  transition: color 0.18s, border-color 0.18s;
+}
+.proj-tab.active { color: var(--navy); border-bottom-color: var(--bronze); }
+.proj-panel { display: none; }
+.proj-panel.active { display: block; }
+
+/* ══════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════ */
+.footer {
+  background: var(--navy);
+  padding: clamp(56px,7vw,96px) var(--gutter);
+}
+.footer-inner {
+  max-width: var(--max); margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(40px,6vw,80px);
+}
+.footer-name {
+  font-family: var(--serif);
+  font-size: clamp(36px,5vw,68px);
+  font-weight: 300; color: var(--white);
+  line-height: 1.0; letter-spacing: -0.03em;
+  margin-bottom: 16px;
+}
+.footer-name em { font-style: italic; color: var(--bronze); display: block; }
+.footer-sub { font-size: 13.5px; color: rgba(255,255,255,0.4); line-height: 1.75; }
+.footer-right { display: flex; flex-direction: column; justify-content: flex-end; }
+.footer-links { display: flex; flex-direction: column; gap: 0; }
+.footer-links a {
+  font-size: 13px; color: rgba(255,255,255,0.45);
+  text-decoration: none; padding: 14px 0;
+  border-top: 0.5px solid rgba(255,255,255,0.08);
+  display: flex; align-items: center; justify-content: space-between;
+  transition: color 0.18s;
+}
+.footer-links a:last-child { border-bottom: 0.5px solid rgba(255,255,255,0.08); }
+.footer-links a:hover { color: var(--white); }
+.footer-links a span { color: var(--bronze); font-size: 12px; }
+
+/* ══════════════════════════════════════════
+   SCROLL REVEAL
+══════════════════════════════════════════ */
+.reveal {
+  opacity: 0; transform: translateY(22px);
+  transition: opacity 0.65s var(--ease), transform 0.65s var(--ease);
+}
+.reveal.visible { opacity: 1; transform: none; }
+.rv1 { transition-delay: 0.08s; }
+.rv2 { transition-delay: 0.16s; }
+.rv3 { transition-delay: 0.24s; }
+.rv4 { transition-delay: 0.32s; }
+
+/* ══════════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════════ */
+@keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .two-col { grid-template-columns: 1fr; }
+  .sidebar { position: static; flex-direction: row; flex-wrap: wrap; gap: 24px; }
+  .sdb-block { min-width: 200px; }
+}
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; min-height: auto; }
+  .hero-left { min-height: 60vh; }
+  .hero-right { min-height: 50vw; }
+  .hero-contact-strip { grid-template-columns: 1fr 1fr; }
+  .footer-inner { grid-template-columns: 1fr; }
+  .sh { grid-template-columns: 1fr; }
+  .sh-right { text-align: left; max-width: none; }
+}
+@media (max-width: 640px) {
+  .nav-links, .nav-cta { display: none; }
+  .nav-ham { display: flex; }
+  .hero-name { font-size: 48px; }
+  .hero-contact-strip { grid-template-columns: 1fr; }
+  .kpis { grid-template-columns: 1fr 1fr; }
+  .delivs { grid-template-columns: 1fr 1fr; }
+  .chips-inner { gap: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════ NAV ══════ -->
+<nav class="nav" id="nav">
+  <a class="nav-logo" href="#top">Josie <span>Thumno</span></a>
+  <ul class="nav-links">
+    <li><a href="#parcours">Parcours</a></li>
+    <li><a href="#projets">Projets</a></li>
+    <li><a href="#competences">Compétences</a></li>
+    <li><a href="#formation">Formation</a></li>
+  </ul>
+  <a class="nav-cta" href="mailto:jcoraliethumno@gmail.com">Contact</a>
+  <button class="nav-ham" id="ham" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mob-menu" id="mob">
+  <a href="#parcours" onclick="closeMob()">Parcours</a>
+  <a href="#projets" onclick="closeMob()">Projets</a>
+  <a href="#competences" onclick="closeMob()">Compétences</a>
+  <a href="#formation" onclick="closeMob()">Formation</a>
+  <a href="mailto:jcoraliethumno@gmail.com" onclick="closeMob()">Contact</a>
+</div>
+
+<!-- ══════ HERO ══════ -->
+<section class="hero" id="top">
+  <div class="hero-left">
+    <div>
+      <p class="hero-eyebrow">Portfolio · Alternance 2026</p>
+      <h1 class="hero-name serif">Josie Coralie<em>Thumno</em></h1>
+      <p class="hero-pitch">Étudiante en Mastère Audit &amp; Contrôle de Gestion - ESG Finance Paris. 18 mois d'expérience terrain en audit financier, contrôle interne et pilotage de la performance avant l'alternance.</p>
+      <div class="hero-btns">
+        <a class="btn-hero-p" href="#parcours">Voir le parcours</a>
+        <a class="btn-hero-s" href="#projets">Projets portfolio</a>
+      </div>
+    </div>
+    <div class="hero-bottom-labels">
+      <div class="hero-bottom-label">
+        <span class="hero-bottom-val serif">18</span>
+        <span class="hero-bottom-key">Mois d'expérience</span>
+      </div>
+      <div class="hero-bottom-label">
+        <span class="hero-bottom-val serif">4</span>
+        <span class="hero-bottom-key">Entreprises</span>
+      </div>
+      <div class="hero-bottom-label">
+        <span class="hero-bottom-val serif">M2</span>
+        <span class="hero-bottom-key">ESG Finance Paris</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-photo-area">
+      <img src="https://media.licdn.com/dms/image/v2/D5635AQEPAjJyxIeutQ/profile-framedphoto-shrink_400_400/B56ZwyEEtKHUAc-/0/1770366455054?e=1776103200&v=beta&t=zWSKkEMlvAiORBn8k205ueBiBgJc4u-7RHkshmput9M" alt="Josie Coralie Thumno" loading="eager"/>
+      <div class="hero-ring-wrap">
+        <svg viewBox="0 0 300 300">
+          <circle class="hr-track" cx="150" cy="150" r="140"/>
+          <circle class="hr-fill" id="ring-hero" cx="150" cy="150" r="140" transform="rotate(-90 150 150)"/>
+        </svg>
+      </div>
+    </div>
+    <div class="hero-contact-strip">
+      <div class="hcs-item">
+        <span class="hcs-label">Téléphone</span>
+        <span class="hcs-val">06 05 80 28 55</span>
+      </div>
+      <div class="hcs-item">
+        <span class="hcs-label">Email</span>
+        <span class="hcs-val"><a href="mailto:jcoraliethumno@gmail.com">jcoraliethumno@gmail.com</a></span>
+      </div>
+      <div class="hcs-item">
+        <span class="hcs-label">Localisation</span>
+        <span class="hcs-val">Paris, Île-de-France</span>
+      </div>
+      <div class="hcs-item">
+        <span class="hcs-label">LinkedIn</span>
+        <span class="hcs-val"><a href="https://linkedin.com/in/josie-coralie-thumno" target="_blank">josie-coralie-thumno</a></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ CHIPS ══════ -->
+<div class="chips-row">
+  <div class="chips-inner">
+    <div class="chip-item accent">Disponible sept. 2026 · Rythme 2/2</div>
+    <div class="chip-item">Audit financier</div>
+    <div class="chip-item">Contrôle interne</div>
+    <div class="chip-item">Contrôle de gestion</div>
+    <div class="chip-item">Reporting direction</div>
+    <div class="chip-item">Analyse budgétaire</div>
+    <div class="chip-item">Clôtures mensuelles</div>
+    <div class="chip-item">Excel · TCD · VBA</div>
+    <div class="chip-item">Conformité documentaire</div>
+  </div>
+</div>
+
+<!-- ══════ SECTION PRINCIPALE ══════ -->
+<section id="parcours">
+  <div class="wrap">
+
+    <div class="sh reveal">
+      <div class="sh-left">
+        <div class="sh-num">01 — Parcours complet</div>
+        <h2 class="sh-h serif">Expériences, compétences<br>&amp; formation</h2>
+      </div>
+      <p class="sh-right"> </p>
+    </div>
+
+    <div class="two-col">
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="sdb-block">
+          <div class="sdb-title">Navigation</div>
+          <ul class="sdb-nav">
+            <li><a href="#s-xp">Expériences</a></li>
+            <li><a href="#s-comp">Compétences</a></li>
+            <li><a href="#s-form">Formation</a></li>
+            <li><a href="#projets">Projets portfolio</a></li>
+          </ul>
+        </div>
+        <div class="sdb-block">
+          <div class="sdb-title">Contact rapide</div>
+          <div class="sdb-contact-item">
+            <span class="sdb-contact-key">Téléphone</span>
+            <span class="sdb-contact-val">06 05 80 28 55</span>
+          </div>
+          <div class="sdb-contact-item">
+            <span class="sdb-contact-key">Email</span>
+            <span class="sdb-contact-val"><a href="mailto:jcoraliethumno@gmail.com">Écrire un email</a></span>
+          </div>
+          <div class="sdb-contact-item">
+            <span class="sdb-contact-key">LinkedIn</span>
+            <span class="sdb-contact-val"><a href="https://linkedin.com/in/josie-coralie-thumno" target="_blank">Voir le profil</a></span>
+          </div>
+          <div class="sdb-contact-item">
+            <span class="sdb-contact-key">Disponibilité</span>
+            <span class="sdb-contact-val">Septembre 2026</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- CONTENT FEED -->
+      <div class="content-feed" id="feed">
+
+        <!-- ────── EXPÉRIENCES ────── -->
+        <div class="feed-section-label" id="s-xp">
+          <span class="fsl-text">Expériences professionnelles</span>
+          <span class="fsl-line"></span>
+        </div>
+
+        <!-- ZAHRA -->
+        <div class="card reveal" id="c-zahra">
+          <div class="card-hd" onclick="toggleCard('zahra')">
+            <div>
+              <div class="ch-period">07/2025 — 02/2026</div>
+              <div class="ch-title serif">Zahra Finance Academy</div>
+              <div class="ch-sub">Auditeur Financier</div>
+            </div>
+            <div class="ch-right">
+              <span class="ch-badge">CDD · 8 mois</span>
+              <div class="plus" id="plus-zahra">+</div>
+            </div>
+          </div>
+          <div class="card-bd" id="bd-zahra">
+            <div class="card-bd-inner">
+              <p class="context">Cabinet de conseil en audit financier production de rapports d'audit, contrôle budgétaire et analyse des processus internes sur des dossiers PME (facturation, trésorerie, reporting).</p>
+              <div class="missions">
+                <div class="m key"><strong>Rapports d'audit :</strong> rédigé les sections d'observations, synthèse des anomalies et recommandations actionnables, livraison dans les délais contractuels sur l'ensemble des dossiers.</div>
+                <div class="m key"><strong>Contrôle budgétaire mensuel :</strong> calculé et analysé les écarts prévisionnel / réalisé, identifié les postes de dérive, tableaux de synthèse commentés à destination des responsables financiers clients.</div>
+                <div class="m"><strong>Analyse des processus internes :</strong> examiné les cycles facturation, trésorerie et reporting de plusieurs PME pour détecter les failles et proposer des optimisations documentées.</div>
+                <div class="m"><strong>Gestion des dossiers permanents :</strong> mise à jour complète du portefeuille clients, coordination des relances avant les échéances contractuelles.</div>
+                <div class="m"><strong>Conformité documentaire :</strong> détecté doubles imputations et incohérences, signalement systématique avec traçabilité dans les dossiers de travail.</div>
+              </div>
+              <div class="kpis">
+                <div class="kpi"><div class="kpi-v serif">8</div><div class="kpi-l">mois en cabinet d'audit financier</div></div>
+                <div class="kpi"><div class="kpi-v serif">100%</div><div class="kpi-l">dossiers mis à jour dans les délais</div></div>
+                <div class="kpi"><div class="kpi-v serif">0</div><div class="kpi-l">rapport livré hors délai</div></div>
+                <div class="kpi"><div class="kpi-v serif">3+</div><div class="kpi-l">processus analysés par dossier</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ABIF -->
+        <div class="card reveal rv1" id="c-abif">
+          <div class="card-hd" onclick="toggleCard('abif')">
+            <div>
+              <div class="ch-period">02/2025 - 07/2025</div>
+              <div class="ch-title serif">ABIF - Négoces</div>
+              <div class="ch-sub">Assistante Comptable</div>
+            </div>
+            <div class="ch-right">
+              <span class="ch-badge">Stage · 5 mois</span>
+              <div class="plus" id="plus-abif">+</div>
+            </div>
+          </div>
+          <div class="card-bd" id="bd-abif">
+            <div class="card-bd-inner">
+              <p class="context">Entreprise de négoce clôtures mensuelles, reporting financier, suivi fournisseurs et mise à jour des procédures internes de reporting.</p>
+              <div class="missions">
+                <div class="m key"><strong>Clôtures mensuelles de bout en bout :</strong> fiabilisation des données, vérification des imputations, lettrage des comptes, préparation des reportings et analyse des indicateurs de performance.</div>
+                <div class="m key"><strong>Présentation des résultats financiers :</strong> préparé et présenté les résultats mensuels commentés — CA, marges, charges — pour une prise de décision éclairée en direction.</div>
+                <div class="m"><strong>Procédures internes :</strong> revu et documenté les procédures de reporting comptable pour réduire les risques d'erreur et améliorer la traçabilité.</div>
+                <div class="m"><strong>Rapprochements bancaires :</strong> rapprochements mensuels complets, identification et résolution des écarts, image fidèle de la trésorerie maintenue.</div>
+                <div class="m"><strong>Traitement fournisseurs :</strong> contrôle, validation et archivage des factures, préparation des ordres de paiement dans les délais légaux.</div>
+              </div>
+              <div class="kpis">
+                <div class="kpi"><div class="kpi-v serif">5</div><div class="kpi-l">clôtures réalisées en autonomie</div></div>
+                <div class="kpi"><div class="kpi-v serif">100%</div><div class="kpi-l">rapprochements soldés sans écart</div></div>
+                <div class="kpi"><div class="kpi-v serif">2</div><div class="kpi-l">procédures révisées et documentées</div></div>
+                <div class="kpi"><div class="kpi-v serif">5</div><div class="kpi-l">reportings présentés à la direction</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DENVER -->
+        <div class="card reveal rv2" id="c-denver">
+          <div class="card-hd" onclick="toggleCard('denver')">
+            <div>
+              <div class="ch-period">09/2024 - 01/2025</div>
+              <div class="ch-title serif">Denver Platza Hotel</div>
+              <div class="ch-sub">Gestionnaire &amp; Caissière</div>
+            </div>
+            <div class="ch-right">
+              <span class="ch-badge">CDD · 5 mois</span>
+              <div class="plus" id="plus-denver">+</div>
+            </div>
+          </div>
+          <div class="card-bd" id="bd-denver">
+            <div class="card-bd-inner">
+              <p class="context">Établissement hôtelier gestion opérationnelle d'un point de vente, suivi budgétaire et reporting financier hebdomadaire avec forte autonomie.</p>
+              <div class="missions">
+                <div class="m key"><strong>Gestion budgétaire &amp; écarts :</strong> élaboré les budgets prévisionnels mensuels, suivi les écarts, analysé les causes de dérive et proposé des ajustements pour optimiser la rentabilité.</div>
+                <div class="m key"><strong>Reporting financier direction :</strong> reportings hebdomadaires  CA, marge brute, flux de trésorerie, écarts N-1 — avec analyse commentée des indicateurs de performance économique.</div>
+                <div class="m"><strong>Gestion des stocks &amp; trésorerie :</strong> suivi des niveaux de stock, prévisions de trésorerie à court terme intégrant les cycles d'achat et les encaissements journaliers.</div>
+                <div class="m"><strong>Tenue de caisse :</strong> réconciliation quotidienne des encaissements zéro écart de caisse non justifié sur l'ensemble de la période.</div>
+              </div>
+              <div class="kpis">
+                <div class="kpi"><div class="kpi-v serif">20+</div><div class="kpi-l">reportings produits direction</div></div>
+                <div class="kpi"><div class="kpi-v serif">5</div><div class="kpi-l">budgets mensuels élaborés</div></div>
+                <div class="kpi"><div class="kpi-v serif">0</div><div class="kpi-l">écart de caisse non justifié</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FIRST TRUST -->
+        <div class="card reveal rv3" id="c-trust">
+          <div class="card-hd" onclick="toggleCard('trust')">
+            <div>
+              <div class="ch-period">06/2023 - 08/2023</div>
+              <div class="ch-title serif">First Trust Saving &amp; Loan SA</div>
+              <div class="ch-sub">Assistante Comptable</div>
+            </div>
+            <div class="ch-right">
+              <span class="ch-badge">Stage · 2 mois</span>
+              <div class="plus" id="plus-trust">+</div>
+            </div>
+          </div>
+          <div class="card-bd" id="bd-trust">
+            <div class="card-bd-inner">
+              <p class="context">Institution financière  comptabilité bancaire, suivi de trésorerie, gestion des immobilisations et analyse des indicateurs financiers clés.</p>
+              <div class="missions">
+                <div class="m key"><strong>Suivi des flux de trésorerie :</strong> suivi quotidien entrées/sorties, prévisions cash-flow 30/60 jours, saisie et réconciliation des soldes comptables.</div>
+                <div class="m"><strong>Analyse des ratios financiers :</strong> calculé et commenté ratios de liquidité, solvabilité et rentabilité pour appuyer la prise de décision.</div>
+                <div class="m"><strong>Suivi des immobilisations :</strong> tableau des immobilisations, calcul des amortissements, cohérence registres physiques et comptables.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ────── COMPÉTENCES ────── -->
+        <div class="feed-section-label" id="s-comp" style="margin-top:28px">
+          <span class="fsl-text">Compétences</span>
+          <span class="fsl-line"></span>
+        </div>
+
+        <!-- Audit & CI -->
+        <div class="card reveal">
+          <div class="card-hd" onclick="toggleCard('sk-audit')">
+            <div>
+              <div class="ch-period">Techniques</div>
+              <div class="ch-title serif">Audit &amp; Contrôle Interne</div>
+              <div class="ch-sub">4 compétences détaillées avec niveau et expériences associées</div>
+            </div>
+            <div class="ch-right">
+              <span class="ch-badge edu">Maîtrisé</span>
+              <div class="plus" id="plus-sk-audit">+</div>
+            </div>
+          </div>
+          <div class="card-bd" id="bd-sk-audit">
+            <div class="card-bd-inner">
+              <div class="skill-rows">
+
+                <div class="skill-r" onclick="toggleSk('ska1')">
+                  <div class="sk-info"><div class="sk-name">Rédaction rapport d'audit</div><div class="sk-lvl">Opérationnel · Zahra Finance Academy</div></div>
+                  <div class="sk-ring"><svg viewBox="0 0 42 42"><circle class="sr-track" cx="21" cy="21" r="17"/><circle class="sr-fill" cx="21" cy="21" r="17" data-pct="82" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 21 21)"/></svg><div class="sk-ring-pct">82%</div></div>
+                  <button class="sk-plus" id="spb-ska1">+</button>
+                </div>
+                <div class="sk-detail" id="ska1">
+                  <p>8 mois de pratique quotidienne — rédaction des observations, synthèse des anomalies, recommandations sur des dossiers PME réels. Structure IIA appliquée dans le projet portfolio.</p>
+                  <ul><li>Synthèse exécutive + constats par cycle + recommandations court/moyen/long terme</li><li>Adaptation du niveau de détail selon l'interlocuteur (direction vs contrôleurs)</li><li>100% des rapports livrés dans les délais contractuels</li></ul>
+                </div>
+
+                <div class="skill-r" onclick="toggleSk('ska2')">
+                  <div class="sk-info"><div class="sk-name">Tests de contrôle interne</div><div class="sk-lvl">Solide · Projet portfolio</div></div>
+                  <div class="sk-ring"><svg viewBox="0 0 42 42"><circle class="sr-track" cx="21" cy="21" r="17"/><circle class="sr-fill" cx="21" cy="21" r="17" data-pct="75" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 21 21)"/></svg><div class="sk-ring-pct">75%</div></div>
+                  <button class="sk-plus" id="spb-ska2">+</button>
+                </div>
+                <div class="sk-detail" id="ska2">
+                  <p>Appliqué sur 175 transactions contrôle des 3 voies (BC/BL/Facture), séparation des fonctions, test de cut-off, sondage statistique.</p>
+                  <ul><li>4 factures sans bon de commande détectées sur 100% des transactions &gt;2 000€</li><li>Virement non comptabilisé de 3 200€ identifié lors des tests de trésorerie</li><li>Documentation des preuves d'audit avec traçabilité complète</li></ul>
+                </div>
+
+                <div class="skill-r" onclick="toggleSk('ska3')">
+                  <div class="sk-info"><div class="sk-name">Cartographie des risques</div><div class="sk-lvl">En développement · Projet portfolio</div></div>
+                  <div class="sk-ring"><svg viewBox="0 0 42 42"><circle class="sr-track" cx="21" cy="21" r="17"/><circle class="sr-fill" cx="21" cy="21" r="17" data-pct="70" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 21 21)"/></svg><div class="sk-ring-pct">70%</div></div>
+                  <button class="sk-plus" id="spb-ska3">+</button>
+                </div>
+                <div class="sk-detail" id="ska3">
+                  <p>Matrice probabilité × impact sur 18 constats, classification Critique/Élevé/Moyen/Faible avec risque résiduel estimé. Méthodologie COSO en cours d'approfondissement au Mastère.</p>
+                  <ul><li>Construction d'une matrice des risques résiduels sous Excel</li><li>Classification des constats avec preuves d'audit référencées</li><li>Consolidation en cours dans le Mastère ESG Finance</li></ul>
+                </div>
+
+                <div class="skill-r" onclick="toggleSk('ska4')">
+                  <div class="sk-info"><div class="sk-name">Conformité documentaire</div><div class="sk-lvl">Maîtrisé · 3 postes différents</div></div>
+                  <div class="sk-ring"><svg viewBox="0 0 42 42"><circle class="sr-track" cx="21" cy="21" r="17"/><circle class="sr-fill" cx="21" cy="21" r="17" data-pct="88" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 21 21)"/></svg><div class="sk-ring-pct">88%</div></div>
+                  <button class="sk-plus" id="spb-ska4">+</button>
+                </div>
+                <div class="sk-detail" id="ska4">
+                  <p>Pratique quotidienne chez Zahra Finance Academy et ABIF Négoces vérification des pièces justificatives, archivage structuré, obligations légales d'archivage en France.</p>
+                  <ul><li>Détection de doubles imputations et incohérences dans les dossiers clients</li><li>Mise à jour de procédures internes liées à la conformité</li><li>Connaissance des obligations d'archivage légal (6 ans minimum)</li></ul>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CDG -->
+        <div class="card reveal rv1">
+          <div class="card-hd" onclick="toggleCard('sk-cdg')">
+            <div>
+              <div class="ch-period">Techniques</div>
+              <div class="ch-title serif">Contrôle de Gestion</div>
+              <div class="ch-sub">4 compétences détaillées avec niveau et expériences associées</div>
+            </div>
+            <div class="ch-right">
+              <span class="ch-badge edu">Solide</span>
+              <div class="plus" id="plus-sk-cdg">+</div>
+            </div>
+          </div>
+          <div class="card-bd" id="bd-sk-cdg">
+            <div class="card-bd-inner">
+              <div class="skill-rows">
+
+                <div class="skill-r" onclick="toggleSk('skc1')">
+                  <div class="sk-info"><div class="sk-name">Clôtures comptables mensuelles</div><div class="sk-lvl">Maîtrisé · ABIF Négoces</div></div>
+                  <div class="sk-ring"><svg viewBox="0 0 42 42"><circle class="sr-track" cx="21" cy="21" r="17"/><circle class="sr-fill bronze" cx="21" cy="21" r="17" data-pct="85" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 21 21)"/></svg><div class="sk-ring-pct">85%</div></div>
+                  <button class="sk-plus" id="spb-skc1">+</button>
+                </div>
+                <div class="sk-detail" id="skc1">
+                  <p>5 clôtures mensuelles réalisées en autonomie complète fiabilisation des données, lettrage des comptes, préparation des reportings et analyse des indicateurs de performance.</p>
+                  <ul><li>Cycle complet de bout en bout sans supervision directe</li><li>Vérification des imputations analytiques et fiabilisation des données</li><li>Production des reportings associés pour la direction le même jour</li></ul>
+                </div>
+
+                <div class="skill-r" onclick="toggleSk('skc2')">
+                  <div class="sk-info"><div class="sk-name">Analyse budgétaire &amp; écarts</div><div class="sk-lvl">Solide · Zahra + Denver + Projet CDG</div></div>
+                  <div class="sk-ring"><svg viewBox="0 0 42 42"><circle class="sr-track" cx="21" cy="21" r="17"/><circle class="sr-fill bronze" cx="21" cy="21" r="17" data-pct="80" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 21 21)"/></svg><div class="sk-ring-pct">80%</div></div>
+                  <button class="sk-plus" id="spb-skc2">+</button>
+                </div>
+                <div class="sk-detail" id="skc2">
+                  <p>Pratiquée dans 3 contextes différents contrôle budgétaire mensuel en cabinet, budgets prévisionnels à l'hôtel, décomposition volume/prix/mix dans le projet CDG.</p>
+                  <ul><li>Calcul et commentaire des écarts budget/réalisé</li><li>Décomposition des écarts par nature (volume, prix, mix)</li><li>Identification des causes racines et formulation d'actions correctives</li></ul>
+                </div>
+
+                <div class="skill-r" onclick="toggleSk('skc3')">
+                  <div class="sk-info"><div class="sk-name">Reporting de gestion</div><div class="sk-lvl">Maîtrisé · 25+ reportings produits</div></div>
+                  <div class="sk-ring"><svg viewBox="0 0 42 42"><circle class="sr-track" cx="21" cy="21" r="17"/><circle class="sr-fill bronze" cx="21" cy="21" r="17" data-pct="82" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 21 21)"/></svg><div class="sk-ring-pct">82%</div></div>
+                  <button class="sk-plus" id="spb-skc3">+</button>
+                </div>
+                <div class="sk-detail" id="skc3">
+                  <p>Production régulière de reportings direction dans 3 postes : ABIF Négoces, Denver Platza Hotel, Zahra Finance Academy.</p>
+                  <ul><li>Structuration : résumé exécutif, faits marquants, indicateurs commentés</li><li>Adaptation du niveau de détail selon l'audience</li><li>25+ reportings produits sur l'ensemble du parcours</li></ul>
+                </div>
+
+                <div class="skill-r" onclick="toggleSk('skc4')">
+                  <div class="sk-info"><div class="sk-name">Suivi de trésorerie</div><div class="sk-lvl">Solide · 3 contextes différents</div></div>
+                  <div class="sk-ring"><svg viewBox="0 0 42 42"><circle class="sr-track" cx="21" cy="21" r="17"/><circle class="sr-fill bronze" cx="21" cy="21" r="17" data-pct="78" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 21 21)"/></svg><div class="sk-ring-pct">78%</div></div>
+                  <button class="sk-plus" id="spb-skc4">+</button>
+                </div>
+                <div class="sk-detail" id="skc4">
+                  <p>Pratiqué dans 3 contextes : suivi bancaire quotidien chez First Trust, prévisions à l'hôtel, rapprochements mensuels chez ABIF Négoces.</p>
+                  <ul><li>Rapprochements bancaires mensuels complets</li><li>Prévisions cash-flow 30/60 jours</li><li>Prévisions trésorerie 12 mois avec cycles DSO/DPO</li></ul>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Outils -->
+        <div class="card reveal rv2">
+          <div class="card-hd" onclick="toggleCard('sk-outils')">
+            <div>
+              <div class="ch-period">Outils &amp; Soft Skills</div>
+              <div class="ch-title serif">Outils, Informatique &amp; Comportemental</div>
+              <div class="ch-sub">7 compétences clés avec niveau et preuves terrain</div>
+            </div>
+            <div class="ch-right">
+              <span class="ch-badge edu">Maîtrisé</span>
+              <div class="plus" id="plus-sk-outils">+</div>
+            </div>
+          </div>
+          <div class="card-bd" id="bd-sk-outils">
+            <div class="card-bd-inner">
+              <div class="skill-rows">
+
+                <div class="skill-r" onclick="toggleSk('sko1')">
+                  <div class="sk-info"><div class="sk-name">Power BI &amp; Excel : TCD &amp; formules avancées</div><div class="sk-lvl">Maîtrisé · Tous les postes</div></div>
+                  <div class="sk-ring"><svg viewBox="0 0 42 42"><circle class="sr-track" cx="21" cy="21" r="17"/><circle class="sr-fill" cx="21" cy="21" r="17" data-pct="88" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 21 21)"/></svg><div class="sk-ring-pct">88%</div></div>
+                  <button class="sk-plus" id="spb-sko1">+</button>
+                </div>
+                <div class="sk-detail" id="sko1"><p>Outil principal sur tous les postes occupés, TCD multi-sources, formules avancées pour les rapprochements, modèles budgétaires dynamiques.</p><ul><li>TCD multi-sources pour les analyses budgétaires</li><li>INDEX/EQUIV, SOMME.SI.ENS, formules matricielles</li><li>Modèles budgétaires dynamiques avec simulation de scénarios</li></ul></div>
+
+                <div class="skill-r" onclick="toggleSk('sko2')">
+                  <div class="sk-info"><div class="sk-name">Excel VBA, macros</div><div class="sk-lvl">En développement · Projet CDG</div></div>
+                  <div class="sk-ring"><svg viewBox="0 0 42 42"><circle class="sr-track" cx="21" cy="21" r="17"/><circle class="sr-fill" cx="21" cy="21" r="17" data-pct="65" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 21 21)"/></svg><div class="sk-ring-pct">65%</div></div>
+                  <button class="sk-plus" id="spb-sko2">+</button>
+                </div>
+                <div class="sk-detail" id="sko2"><p>Macros d'automatisation du reporting mensuel, feux RAG automatiques, génération PDF en 1 clic dans le projet CDG. En progression active.</p><ul><li>Dashboard avec feux RAG calculés automatiquement</li><li>Export PDF automatisé par macro</li><li>Objectif : niveau avancé d'ici fin 2026</li></ul></div>
+
+                <div class="skill-r" onclick="toggleSk('sko3')">
+                  <div class="sk-info"><div class="sk-name">PowerPoint - supports direction</div><div class="sk-lvl">Maîtrisé · Multiple contextes</div></div>
+                  <div class="sk-ring"><svg viewBox="0 0 42 42"><circle class="sr-track" cx="21" cy="21" r="17"/><circle class="sr-fill" cx="21" cy="21" r="17" data-pct="80" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 21 21)"/></svg><div class="sk-ring-pct">80%</div></div>
+                  <button class="sk-plus" id="spb-sko3">+</button>
+                </div>
+                <div class="sk-detail" id="sko3"><p>Slides synthétiques adaptées aux audiences direction et COMEX.</p><ul><li>Structuration narrative : contexte, faits, recommandations</li><li>Principes de visualisation de données</li><li>Présentation de résultats financiers mensuels</li></ul></div>
+
+                <div class="skill-r" onclick="toggleSk('sko4')">
+                  <div class="sk-info"><div class="sk-name">Rigueur &amp; sens du détail</div><div class="sk-lvl">Prouvé en contexte · Score 95%</div></div>
+                  <div class="sk-ring"><svg viewBox="0 0 42 42"><circle class="sr-track" cx="21" cy="21" r="17"/><circle class="sr-fill bronze" cx="21" cy="21" r="17" data-pct="95" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 21 21)"/></svg><div class="sk-ring-pct">95%</div></div>
+                  <button class="sk-plus" id="spb-sko4">+</button>
+                </div>
+                <div class="sk-detail" id="sko4"><p>Qualité fondamentale en audit : démontrée par des résultats concrets sur le terrain, pas seulement déclarée.</p><ul><li>Détection de doubles imputations dans des dossiers clients complexes</li><li>Zéro écart de caisse non justifié sur 5 mois au Denver Platza Hotel</li><li>100% des dossiers permanents mis à jour dans les délais contractuels</li></ul></div>
+
+                <div class="skill-r" onclick="toggleSk('sko5')">
+                  <div class="sk-info"><div class="sk-name">Autonomie terrain</div><div class="sk-lvl">Prouvé en contexte · Score 88%</div></div>
+                  <div class="sk-ring"><svg viewBox="0 0 42 42"><circle class="sr-track" cx="21" cy="21" r="17"/><circle class="sr-fill bronze" cx="21" cy="21" r="17" data-pct="88" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 21 21)"/></svg><div class="sk-ring-pct">88%</div></div>
+                  <button class="sk-plus" id="spb-sko5">+</button>
+                </div>
+                <div class="sk-detail" id="sko5"><p>Prise en charge autonome dans trois environnements différents dès le premier mois dans chaque structure.</p><ul><li>Gestion autonome d'un portefeuille de dossiers clients en cabinet</li><li>Clôtures mensuelles sans supervision directe après 1 mois de prise en main</li><li>Gestion complète d'un point de vente incluant budget et reporting</li></ul></div>
+
+                <div class="skill-r" onclick="toggleSk('sko6')">
+                  <div class="sk-info"><div class="sk-name">Discrétion &amp; confidentialité</div><div class="sk-lvl">Fondamental · Score 95%</div></div>
+                  <div class="sk-ring"><svg viewBox="0 0 42 42"><circle class="sr-track" cx="21" cy="21" r="17"/><circle class="sr-fill bronze" cx="21" cy="21" r="17" data-pct="95" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 21 21)"/></svg><div class="sk-ring-pct">95%</div></div>
+                  <button class="sk-plus" id="spb-sko6">+</button>
+                </div>
+                <div class="sk-detail" id="sko6"><p>Accès régulier à des données financières sensibles de clients en cabinet d'audit, respect strict du secret professionnel.</p><ul><li>Données financières confidentielles de multiples entreprises clientes</li><li>Connaissance des obligations de secret professionnel en audit</li><li>Aucun incident de confidentialité sur l'ensemble du parcours</li></ul></div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ────── FORMATION ────── -->
+        <div class="feed-section-label" id="s-form" style="margin-top:28px">
+          <span class="fsl-text">Formation</span>
+          <span class="fsl-line"></span>
+        </div>
+
+        <!-- ESG -->
+        <div class="card reveal">
+          <div class="card-hd" onclick="toggleCard('edu-esg')">
+            <div>
+              <div class="ch-period">2025 - 2027 · En cours</div>
+              <div class="ch-title serif">ESG Finance - Paris</div>
+              <div class="ch-sub">Mastère Audit &amp; Contrôle de Gestion</div>
+            </div>
+            <div class="ch-right">
+              <span class="ch-badge edu">Mastère · Bac+5</span>
+              <div class="plus" id="plus-edu-esg">+</div>
+            </div>
+          </div>
+          <div class="card-bd" id="bd-edu-esg">
+            <div class="card-bd-inner">
+              <p class="context">Formation en audit et contrôle de gestion en France  cursus de 2 ans articulé autour d'une alternance à partir de septembre 2026 (rythme 2 semaines entreprise / 1 semaines cours).</p>
+              <div class="detail-list">
+                <div class="dl"><strong>Audit légal</strong>  normes d'audit, commissariat aux comptes, procédures d'audit, rapport d'audit</div>
+                <div class="dl"><strong>Diagnostic financier des entités consolidées</strong> lecture et analyse des états financiers consolidés, normes IFRS</div>
+                <div class="dl"><strong>Gestion financière avancée</strong> : évaluation d'entreprise, analyse de la valeur, optimisation financière</div>
+                <div class="dl"><strong>Analyse des coûts &amp; contrôle de gestion</strong> : méthodes de coûts, budgétisation, tableaux de bord</div>
+                <div class="dl"><strong>Contrôle interne</strong> : référentiels COSO, cartographie des risques, dispositif de contrôle</div>
+                <div class="dl"><strong>Normes IFRS</strong> : principales normes, différences avec les normes françaises, consolidation</div>
+                <div class="dl"><strong>Management des équipes</strong> : leadership, gestion de projet, conduite du changement</div>
+              </div>
+              <div class="bridge">
+                <div class="bridge-title">Alternance recherchée</div>
+                <p class="bridge-text">Disponible en alternance à partir de <strong>septembre 2026</strong>, rythme <strong>2 semaines en entreprise / 1 semaines de cours</strong>. Recherche active de structures dans l'audit, la conformité, le contrôle interne ou le contrôle de gestion, Paris et Île-de-France.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DOUALA M2 -->
+        <div class="card reveal rv1">
+          <div class="card-hd" onclick="toggleCard('edu-m2')">
+            <div>
+              <div class="ch-period">2022 - 2023</div>
+              <div class="ch-title serif">Université de Douala</div>
+              <div class="ch-sub">Master 2 - Management des Entreprises : Comptabilité &amp; Finance</div>
+            </div>
+            <div class="ch-right">
+              <span class="ch-badge edu">Master 2 · Bac+5</span>
+              <div class="plus" id="plus-edu-m2">+</div>
+            </div>
+          </div>
+          <div class="card-bd" id="bd-edu-m2">
+            <div class="card-bd-inner">
+              <p class="context">Formation universitaire approfondie en finance et comptabilité, focus sur les techniques avancées d'analyse financière et de gestion de trésorerie, socle théorique solide du parcours.</p>
+              <div class="detail-list">
+                <div class="dl"><strong>Finance approfondie</strong> : marchés financiers, gestion de portefeuille, instruments dérivés, finance internationale</div>
+                <div class="dl"><strong>Analyse financière approfondie</strong> : diagnostic financier, ratios avancés, prévisions, scoring</div>
+                <div class="dl"><strong>Comptabilité approfondie</strong> : comptes consolidés, opérations complexes, normes OHADA</div>
+                <div class="dl"><strong>Gestion de la trésorerie approfondie</strong> : gestion de la liquidité, prévisions, couverture de risques, optimisation</div>
+                <div class="dl"><strong>Audit financier</strong> : planification, tests substantifs, rapport, communication</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DOUALA M1 -->
+        <div class="card reveal rv2">
+          <div class="card-hd" onclick="toggleCard('edu-m1')">
+            <div>
+              <div class="ch-period">2021 - 2022</div>
+              <div class="ch-title serif">Université de Douala</div>
+              <div class="ch-sub">Master 1 : Finance &amp; Comptabilité</div>
+            </div>
+            <div class="ch-right">
+              <span class="ch-badge edu">Master 1 · Bac+4</span>
+              <div class="plus" id="plus-edu-m1">+</div>
+            </div>
+          </div>
+          <div class="card-bd" id="bd-edu-m1">
+            <div class="card-bd-inner">
+              <div class="detail-list">
+                <div class="dl"><strong>Gestion financière internationale</strong> : changes, risques de marché, finance d'entreprise dans un contexte international</div>
+                <div class="dl"><strong>Finance d'entreprise</strong> : valeur de l'entreprise, décisions d'investissement, structure du capital, politique de dividende</div>
+                <div class="dl"><strong>Management</strong> : stratégie, organisation, processus de décision, management opérationnel</div>
+                <div class="dl"><strong>Gestion de la production</strong> : optimisation des flux, planification, gestion des stocks</div>
+                <div class="dl"><strong>Marchés financiers</strong> : fonctionnement, acteurs, instruments, réglementation</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LICENCE -->
+        <div class="card reveal rv3">
+          <div class="card-hd" onclick="toggleCard('edu-lic')">
+            <div>
+              <div class="ch-period">2020 - 2021</div>
+              <div class="ch-title serif">Université de Douala</div>
+              <div class="ch-sub">Licence - Management des Entreprises : Gestion</div>
+            </div>
+            <div class="ch-right">
+              <span class="ch-badge edu">Licence · Bac+3</span>
+              <div class="plus" id="plus-edu-lic">+</div>
+            </div>
+          </div>
+          <div class="card-bd" id="bd-edu-lic">
+            <div class="card-bd-inner">
+              <div class="detail-list">
+                <div class="dl"><strong>Finance d'entreprise et internationale</strong> : bases de la finance, évaluation, financement</div>
+                <div class="dl"><strong>Gestion des ressources humaines</strong> : recrutement, évaluation, droit du travail, gestion des compétences</div>
+                <div class="dl"><strong>Management</strong> : théories des organisations, leadership, processus décisionnel</div>
+                <div class="dl"><strong>Initiation à l'entrepreneuriat</strong> : business plan, création d'entreprise, financement de projet</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /content-feed -->
+    </div><!-- /two-col -->
+  </div><!-- /wrap -->
+</section>
+
+<!-- ══════ PROJETS ══════ -->
+<div style="background: var(--surface2); border-top: 0.5px solid var(--hairline); border-bottom: 0.5px solid var(--hairline);">
+<section id="projets">
+  <div class="wrap">
+
+    <div class="sh reveal">
+      <div class="sh-left">
+        <div class="sh-num">02 - Projets portfolio</div>
+        <h2 class="sh-h serif">Simulations de<br>missions professionnelles</h2>
+      </div>
+      <p class="sh-right">Deux projets complets simulant des missions réelles, avec méthodologie, livrables et résultats mesurables.</p>
+    </div>
+
+    <div class="proj-tabs">
+      <button class="proj-tab active" onclick="showProj('audit', this)">Projet 1 - Audit interne PME</button>
+      <button class="proj-tab" onclick="showProj('cdg', this)">Projet 2 - Contrôle de gestion</button>
+    </div>
+
+    <!-- PROJET AUDIT -->
+    <div class="proj-panel active" id="proj-audit">
+      <div class="card reveal">
+        <div class="card-hd" style="cursor:default">
+          <div>
+            <div class="ch-period">Simulation · Mission d'audit interne · 10 semaines</div>
+            <div class="ch-title serif">Audit interne d'une PME commerciale</div>
+            <div class="ch-sub">Cycles Achats-Fournisseurs &amp; Trésorerie · 175 tests · 18 constats · Référentiel IIA</div>
+          </div>
+          <div class="ch-right">
+            <span class="ch-badge">PME négoce · 45 sal. · CA 8M€</span>
+          </div>
+        </div>
+        <div class="card-bd-inner" style="border-top: 0.5px solid var(--hairline); padding-top: 28px;">
+          <div class="tl">
+            <div class="tlp">
+              <div class="tlp-line"></div>
+              <div class="tlp-num-col"><div class="tlp-num done">1</div></div>
+              <div class="tlp-content">
+                <div class="tlp-head"><div class="tlp-name">Prise de connaissance &amp; planification</div><div class="tlp-dur">Sem. 1–2</div></div>
+                <div class="tlp-desc">Collecte documentaire, cartographie préliminaire des risques, rédaction du programme de travail.</div>
+                <div class="tlp-tasks">
+                  <div class="tlp-task k">Cartographie préliminaire des risques — 10 processus classés probabilité × impact</div>
+                  <div class="tlp-task">Collecte : registre AT, états financiers N-1/N-2, plans de prévention, rapports antérieurs</div>
+                </div>
+              </div>
+            </div>
+            <div class="tlp">
+              <div class="tlp-line"></div>
+              <div class="tlp-num-col"><div class="tlp-num done">2</div></div>
+              <div class="tlp-content">
+                <div class="tlp-head"><div class="tlp-name">Tests de contrôle - Achats-Fournisseurs</div><div class="tlp-dur">Sem. 3–5</div></div>
+                <div class="tlp-desc">Contrôle des 3 voies, séparation des fonctions, délais LME, cut-off - 100 transactions analysées.</div>
+                <div class="tlp-tasks">
+                  <div class="tlp-task k">Contrôle des 3 voies sur 100% des transactions &gt;2 000€, 4 factures sans BC détectées</div>
+                  <div class="tlp-task k">3 fournisseurs stratégiques payés hors délai LME identifiés</div>
+                  <div class="tlp-task">Test de cut-off - 25 dossiers par sondage statistique</div>
+                </div>
+              </div>
+            </div>
+            <div class="tlp">
+              <div class="tlp-line"></div>
+              <div class="tlp-num-col"><div class="tlp-num done">3</div></div>
+              <div class="tlp-content">
+                <div class="tlp-head"><div class="tlp-name">Tests de contrôle, Trésorerie</div><div class="tlp-dur">Sem. 6–7</div></div>
+                <div class="tlp-desc">Rapprochements bancaires sur 6 mois, audit des accès, contrôle de caisse surprise.</div>
+                <div class="tlp-tasks">
+                  <div class="tlp-task k">Virement non comptabilisé de 3 200€ détecté lors des rapprochements</div>
+                  <div class="tlp-task k">Anomalie d'accès sur compte bancaire secondaire identifiée et signalée</div>
+                </div>
+              </div>
+            </div>
+            <div class="tlp">
+              <div class="tlp-line"></div>
+              <div class="tlp-num-col"><div class="tlp-num">4</div></div>
+              <div class="tlp-content">
+                <div class="tlp-head"><div class="tlp-name">Synthèse &amp; matrice des risques</div><div class="tlp-dur">Sem. 8</div></div>
+                <div class="tlp-desc">18 constats consolidés, cotation des risques résiduels Critique/Élevé/Moyen/Faible, réunion de clôture.</div>
+                <div class="tlp-tasks">
+                  <div class="tlp-task k">Matrice des risques : 18 constats avec preuves d'audit référencées</div>
+                </div>
+              </div>
+            </div>
+            <div class="tlp">
+              <div class="tlp-num-col"><div class="tlp-num">5</div></div>
+              <div class="tlp-content">
+                <div class="tlp-head"><div class="tlp-name">Rapport d'audit &amp; plan d'action SMART</div><div class="tlp-dur">Sem. 9–10</div></div>
+                <div class="tlp-desc">Rapport final IIA + 12 actions correctives avec responsables, délais et KPI de suivi.</div>
+                <div class="tlp-tasks">
+                  <div class="tlp-task k">Rapport d'audit : synthèse exécutive, constats par cycle, recommandations court/moyen/long terme</div>
+                  <div class="tlp-task">Plan SMART : 12 actions, 3 priorité critique, revue trimestrielle</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="kpis" style="margin-top:28px">
+            <div class="kpi"><div class="kpi-v serif">18</div><div class="kpi-l">Constats formalisés avec preuves</div></div>
+            <div class="kpi"><div class="kpi-v serif">4</div><div class="kpi-l">Factures sans BC - risque fraude</div></div>
+            <div class="kpi"><div class="kpi-v serif">3 200€</div><div class="kpi-l">Virement non comptabilisé détecté</div></div>
+            <div class="kpi"><div class="kpi-v serif">12</div><div class="kpi-l">Actions correctives SMART</div></div>
+          </div>
+
+          <div class="delivs">
+            <div class="deliv"><div class="deliv-name">Cartographie des risques</div><div class="deliv-desc">10 processus, matrice probabilité × impact, risques résiduels</div></div>
+            <div class="deliv"><div class="deliv-name">175 tests documentés</div><div class="deliv-desc">2 cycles, papiers de travail horodatés</div></div>
+            <div class="deliv"><div class="deliv-name">18 constats formalisés</div><div class="deliv-desc">Classés par criticité, preuves référencées</div></div>
+            <div class="deliv"><div class="deliv-name">Rapport d'audit IIA</div><div class="deliv-desc">Synthèse exécutive, constats, recommandations</div></div>
+            <div class="deliv"><div class="deliv-name">Plan d'action SMART</div><div class="deliv-desc">12 actions, responsables, KPI, revue trimestrielle</div></div>
+          </div>
+
+          <div class="bridge">
+            <div class="bridge-title">Pont avec l'expérience terrain</div>
+            <p class="bridge-text">Ce projet capitalise directement sur les 8 mois chez <strong>Zahra Finance Academy</strong> (rédaction de rapports d'audit, détection d'anomalies, dossiers permanents) et sur la rigueur des rapprochements bancaires pratiqués chez <strong>ABIF Négoces</strong>.</p>
+            <div class="bridge-tags">
+              <span class="btag">Dossiers permanents</span><span class="btag">Tests de contrôle</span><span class="btag">Rapport d'audit structuré</span><span class="btag">Rapprochements bancaires</span><span class="btag">Détection d'anomalies</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJET CDG -->
+    <div class="proj-panel" id="proj-cdg">
+      <div class="card reveal">
+        <div class="card-hd" style="cursor:default">
+          <div>
+            <div class="ch-period">Simulation · Mission contrôle de gestion · 8 semaines</div>
+            <div class="ch-title serif">Dashboard de pilotage &amp; reporting</div>
+            <div class="ch-sub">PME industrielle · Définition KPI · Modèle budgétaire 3 scénarios · Dashboard Excel VBA</div>
+          </div>
+          <div class="ch-right">
+            <span class="ch-badge">PME industrielle · 60 sal.</span>
+          </div>
+        </div>
+        <div class="card-bd-inner" style="border-top: 0.5px solid var(--hairline); padding-top: 28px;">
+          <div class="tl">
+            <div class="tlp">
+              <div class="tlp-line"></div>
+              <div class="tlp-num-col"><div class="tlp-num done">1</div></div>
+              <div class="tlp-content">
+                <div class="tlp-head"><div class="tlp-name">Diagnostic &amp; sélection des KPI</div><div class="tlp-dur">Sem. 1–2</div></div>
+                <div class="tlp-desc">15 indicateurs candidats analysés, 6 retenus pour le COMEX via entretiens opérationnels.</div>
+                <div class="tlp-tasks">
+                  <div class="tlp-task k">6 KPI retenus : CA par ligne, marge brute, OEE, rotation stocks, DSO, absentéisme</div>
+                </div>
+              </div>
+            </div>
+            <div class="tlp">
+              <div class="tlp-line"></div>
+              <div class="tlp-num-col"><div class="tlp-num done">2</div></div>
+              <div class="tlp-content">
+                <div class="tlp-head"><div class="tlp-name">Modèle budgétaire &amp; prévisions trésorerie</div><div class="tlp-dur">Sem. 3–4</div></div>
+                <div class="tlp-desc">Budget annuel dynamique 3 scénarios, prévisions trésorerie 12 mois avec alertes automatiques.</div>
+                <div class="tlp-tasks">
+                  <div class="tlp-task k">Excel VBA : budget base zéro, 3 scénarios, alertes automatiques solde critique</div>
+                  <div class="tlp-task k">Prévisions trésorerie 12 mois : cycles DSO/DPO intégrés</div>
+                </div>
+              </div>
+            </div>
+            <div class="tlp">
+              <div class="tlp-line"></div>
+              <div class="tlp-num-col"><div class="tlp-num done">3</div></div>
+              <div class="tlp-content">
+                <div class="tlp-head"><div class="tlp-name">Analyse des écarts &amp; reporting mensuel</div><div class="tlp-dur">Sem. 5–6</div></div>
+                <div class="tlp-desc">3 mois simulés : décomposition volume/prix/mix, rapports de gestion avec synthèse exécutive.</div>
+                <div class="tlp-tasks">
+                  <div class="tlp-task k">Décomposition écarts budget/réel par ligne de produit et centre de coûts</div>
+                  <div class="tlp-task">Rapport de gestion mensuel : résumé exécutif, KPI commentés, actions correctives</div>
+                </div>
+              </div>
+            </div>
+            <div class="tlp">
+              <div class="tlp-num-col"><div class="tlp-num">4</div></div>
+              <div class="tlp-content">
+                <div class="tlp-head"><div class="tlp-name">Dashboard Excel VBA interactif</div><div class="tlp-dur">Sem. 7–8</div></div>
+                <div class="tlp-desc">6 KPI temps réel, feux RAG automatiques, export PDF en 1 clic. Présentation COMEX 15 min.</div>
+                <div class="tlp-tasks">
+                  <div class="tlp-task k">Dashboard - 6 KPI, feux RAG auto, slicers par ligne, export PDF 1 clic (VBA)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="kpis" style="margin-top:28px">
+            <div class="kpi"><div class="kpi-v serif">6</div><div class="kpi-l">KPI COMEX intégrés au dashboard</div></div>
+            <div class="kpi"><div class="kpi-v serif">3</div><div class="kpi-l">Scénarios budgétaires modélisés</div></div>
+            <div class="kpi"><div class="kpi-v serif">1 clic</div><div class="kpi-l">Génération rapport PDF (VBA)</div></div>
+            <div class="kpi"><div class="kpi-v serif">–80%</div><div class="kpi-l">Temps de reporting estimé</div></div>
+          </div>
+
+          <div class="bridge">
+            <div class="bridge-title">Pont avec l'expérience terrain</div>
+            <p class="bridge-text">Ce projet s'appuie directement sur les clôtures mensuelles d'<strong>ABIF Négoces</strong> et les budgets prévisionnels du <strong>Denver Platza Hotel</strong>. Excel TCD et VBA utilisés sur le terrain, pas seulement appris en formation.</p>
+            <div class="bridge-tags">
+              <span class="btag">Budget prévisionnel</span><span class="btag">Analyse des écarts</span><span class="btag">Reporting direction</span><span class="btag">Excel TCD / VBA</span><span class="btag">KPI de performance</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+</div>
+
+<!-- ══════ FOOTER ══════ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-name serif">Josie Coralie<em>Thumno</em></div>
+      <p class="footer-sub">Mastère Audit &amp; Contrôle de Gestion · ESG Finance Paris<br>Disponible en alternance · Septembre 2026<br>Rythme 2 semaines entreprise / 2 semaines cours</p>
+    </div>
+    <div class="footer-right">
+      <div class="footer-links">
+        <a href="tel:0605802855">Téléphone <span>06 05 80 28 55</span></a>
+        <a href="mailto:jcoraliethumno@gmail.com">Email <span>jcoraliethumno@gmail.com</span></a>
+        <a href="https://linkedin.com/in/josie-coralie-thumno" target="_blank">LinkedIn <span>josie-coralie-thumno</span></a>
+        <a href="#">Localisation <span>Paris, Île-de-France</span></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── HERO RING ── */
+setTimeout(function(){
+  var r = document.getElementById('ring-hero');
+  if(r) r.style.strokeDashoffset = '100';
+}, 500);
+
+/* ── SKILL RINGS ── */
+var ringsReady = false;
+function animateRings(){
+  if(ringsReady) return; ringsReady = true;
+  document.querySelectorAll('.sr-fill').forEach(function(el){
+    var pct = parseFloat(el.dataset.pct || 0);
+    var circ = parseFloat(el.getAttribute('stroke-dasharray'));
+    el.style.strokeDashoffset = String(circ * (1 - pct / 100));
+  });
+}
+
+/* ── SCROLL REVEAL ── */
+var revs = document.querySelectorAll('.reveal');
+var ro = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      ro.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.06, rootMargin: '0px 0px -30px 0px' });
+revs.forEach(function(el){ ro.observe(el); });
+
+/* ── RINGS ON SCROLL ── */
+var skillObs = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){ if(e.isIntersecting) animateRings(); });
+}, { threshold: 0.1 });
+var sg = document.getElementById('feed');
+if(sg) skillObs.observe(sg);
+
+/* ── ACTIVE NAV ── */
+var secs = document.querySelectorAll('section[id], div[id="s-xp"], div[id="s-comp"], div[id="s-form"]');
+var nls = document.querySelectorAll('.nav-links a, .sdb-nav a');
+var no = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      var id = e.target.id;
+      nls.forEach(function(l){
+        l.classList.remove('active');
+        if(l.getAttribute('href') === '#' + id) l.classList.add('active');
+      });
+    }
+  });
+}, { threshold: 0.25 });
+document.querySelectorAll('section[id]').forEach(function(s){ no.observe(s); });
+
+/* ── CARD TOGGLE ── */
+function toggleCard(id){
+  var bd = document.getElementById('bd-' + id);
+  var p  = document.getElementById('plus-' + id);
+  var open = bd.classList.toggle('open');
+  p.classList.toggle('open', open);
+  p.textContent = open ? '×' : '+';
+  if(open) animateRings();
+}
+
+/* ── SKILL DETAIL TOGGLE ── */
+function toggleSk(id){
+  var det = document.getElementById(id);
+  var btn = document.getElementById('spb-' + id);
+  var open = det.classList.toggle('open');
+  btn.classList.toggle('open', open);
+  btn.textContent = open ? '×' : '+';
+}
+
+/* ── PROJECT TABS ── */
+function showProj(id, btn){
+  document.querySelectorAll('.proj-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.proj-tab').forEach(function(t){ t.classList.remove('active'); });
+  document.getElementById('proj-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ── NAV SCROLL ── */
+window.addEventListener('scroll', function(){
+  var nav = document.getElementById('nav');
+  nav.style.background = window.scrollY > 12
+    ? 'rgba(250,250,249,0.97)'
+    : 'rgba(250,250,249,0.88)';
+}, { passive: true });
+
+/* ── HAMBURGER ── */
+var ham = document.getElementById('ham');
+var mob = document.getElementById('mob');
+ham.addEventListener('click', function(){
+  ham.classList.toggle('open');
+  mob.classList.toggle('open');
+});
+function closeMob(){
+  ham.classList.remove('open');
+  mob.classList.remove('open');
+}
+</script>
+</body>
+</html>
